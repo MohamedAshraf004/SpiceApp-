@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpiceApp.Data;
 using SpiceApp.Models;
+using SpiceApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,24 @@ namespace SpiceApp.Services
 
         public async Task<IEnumerable<SubCategory>> GetAllSubCategories()
         {
-            return await _dbContext.SubCategories.ToListAsync();
+            return await _dbContext.SubCategories.Include(c=>c.Category).ToListAsync();
         }
 
+        public async Task<SubCategory> DoesSubCategoryExists(SubCategoryAndCategoryViewModel model)
+        {
+            return await _dbContext.SubCategories.Include(c => c.Category)
+                .Where(s=>s.Name==model.SubCategory.Name && s.Category.Id==model.SubCategory.CategoryId)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<List<SubCategory>> GetSubCategoryInCategory(int categoryId)
+        {
+            return  await _dbContext.SubCategories.Where(c => c.CategoryId == categoryId).ToListAsync();
+        }
         public async Task<SubCategory> GetSubCategoryById(int id)
         {
-            return await _dbContext.SubCategories.FirstOrDefaultAsync(c => c.Id == id);
+            return  await _dbContext.SubCategories.Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == id);
         }
-        public async Task<bool> DeleteCategory(int id)
+        public async Task<bool> DeleteSubCategory(int id)
         {
             var subCategory = await _dbContext.SubCategories.FindAsync(id);
             _dbContext.SubCategories.Remove(subCategory);
