@@ -38,6 +38,8 @@ namespace SpiceApp
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
+            services.AddScoped<IMenuItemService, MenuItemService>();
+            services.AddScoped<ICouponService, CouponService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

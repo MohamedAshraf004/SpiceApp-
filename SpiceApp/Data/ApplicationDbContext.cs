@@ -15,5 +15,14 @@ namespace SpiceApp.Data
         }
         public DbSet<Category> Categories{ get; set; }
         public DbSet<SubCategory> SubCategories{ get; set; }
+        public DbSet<MenuItem> MenuItems{ get; set; }
+        public DbSet<Coupon> Coupons{ get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<MenuItem>().HasOne(c => c.Category).WithMany().OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<MenuItem>().HasOne(c => c.SubCategory).WithMany().OnDelete(DeleteBehavior.NoAction);
+            base.OnModelCreating(builder);
+        }
     }
 }
