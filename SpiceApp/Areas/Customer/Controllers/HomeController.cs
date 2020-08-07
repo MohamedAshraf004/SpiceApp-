@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SpiceApp.Models;
+using SpiceApp.Services;
+using SpiceApp.ViewModels;
 
 namespace SpiceApp.Controllers
 {
@@ -13,15 +15,28 @@ namespace SpiceApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICategoryService categoryService;
+        private readonly IMenuItemService menuItemService;
+        private readonly ICouponService couponService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,ICategoryService categoryService
+                   ,IMenuItemService menuItemService,ICouponService couponService)
         {
             _logger = logger;
+            this.categoryService = categoryService;
+            this.menuItemService = menuItemService;
+            this.couponService = couponService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IndexViewModel model = new IndexViewModel()
+            {
+                Categories= (await categoryService.GetAllCategories()),
+                MenuItems=(await menuItemService.GetAllMenuItems()),
+                Coupons=(await couponService.GetAllCoupons()).Where(a=>a.IsActive).ToList()
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,93 @@
+﻿@model CouponAndPictureViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<br />
+<h2 class="text-info">Edit Coupon</h2>
+<br />
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div class=" row backgroundWhiteBorder">
+        <br />
+        <div class="col-12 border">
+            @{
+                if (Model.Coupon.Picture !=null)
+                {
+                    var base64 = Convert.ToBase64String(Model.Coupon.Picture);
+                    var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                    <img src="@imgsrc" style="max-height: 175px;" height="100%" width="100%" />
+                }
+            }
+        </div>
+        <div class="col-12 pt-4">
+            <input hidden asp-for="Coupon.Id" />
+            @{
+                if (Model.ExistingPhoto != null)
+                {
+                    <input type="hidden" asp-for="ExistingPhoto" />
+                    <span asp-validation-for="ExistingPhoto" class="text-danger"></span>
+
+                }
+            }
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.Name" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <input asp-for="Coupon.Name" class="form-control" />
+                </div>
+                <span asp-validation-for="Coupon.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.Picture" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <input type="file" id="projectImage" name="files" multiple class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.CouponType" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <select asp-for="Coupon.CouponType" asp-items="Html.GetEnumSelectList<Coupon.ECouponType>()" class="form-control"></select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.Discount" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <input asp-for="Coupon.Discount" class="form-control" />
+                </div>
+                <span asp-validation-for="Coupon.Discount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.MinimumAmount" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <input asp-for="Coupon.MinimumAmount" class="form-control" />
+                </div>
+                <span asp-validation-for="Coupon.MinimumAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-2">
+                    <label asp-for="Coupon.IsActive" class="custom-label"></label>
+                </div>
+                <div class="col-5">
+                    <input type="checkbox" asp-for="Coupon.IsActive" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <div class="form-group row">
+                <div class="col-5 offset-2">
+                    <partial name="_EditAndBackToListButton" model="Model.Coupon.Id" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
