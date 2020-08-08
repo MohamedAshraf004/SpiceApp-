@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using SpiceApp.Services;
@@ -12,6 +13,7 @@ using SpiceApp.ViewModels;
 namespace SpiceApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.ManagerUser)]
     public class MenuItemController : Controller
     {
         private readonly IWebHostEnvironment hostEnvironment;

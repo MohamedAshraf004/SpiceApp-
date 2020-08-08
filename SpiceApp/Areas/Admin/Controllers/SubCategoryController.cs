@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SpiceApp.Models;
 using SpiceApp.Services;
+using SpiceApp.Utility;
 using SpiceApp.ViewModels;
 
 namespace SpiceApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.ManagerUser)]
     public class SubCategoryController : Controller
     {
         private readonly ISubCategoryService subCategoryService;

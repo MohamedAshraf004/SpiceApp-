@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpiceApp.Models;
 using SpiceApp.Services;
+using SpiceApp.Utility;
 
 namespace SpiceApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =SD.ManagerUser)]
     public class CategoryController : Controller
     {
         private readonly ICategoryService categoryService;
