@@ -9,6 +9,7 @@ namespace SpiceApp.Services
     {
         Task<IEnumerable<ApplicationUser>> GetUsersExceptCurrentUser(Claim claim);
         Task<ApplicationUser> GetUserById(string id);
+        Task<ApplicationUser> GetUserByEmail(string email);
         Task<bool> UserLock(string id);
         Task<bool> UserUnLock(string id);
     }

@@ -43,5 +43,11 @@ namespace SpiceApp.Services
            return await _dbContext.SaveChangesAsync() >0 ?true : false ;
             
         }
+
+        public async Task<ApplicationUser> GetUserByEmail(string email)
+        {
+            return await _dbContext.ApplicationUsers.FirstOrDefaultAsync(c => c.Email == email);
+            
+        }
     }
 }
