@@ -32,6 +32,10 @@ namespace SpiceApp.Services
         {
             return await _dbContext.Coupons.FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<Coupon> GetCouponByName(string couponName)
+        {
+            return await _dbContext.Coupons.FirstOrDefaultAsync(c => c.Name.ToLower() == couponName.ToLower());
+        }
         public async Task<bool> DeleteCoupon(int id)
         {
             var Coupon = await _dbContext.Coupons.FindAsync(id);

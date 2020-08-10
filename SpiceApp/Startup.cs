@@ -14,7 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SpiceApp.Services;
 using SpiceApp.Models;
+using SpiceApp.Utility;
 using Microsoft.AspNetCore.Http;
+using Stripe;
 
 namespace SpiceApp
 {
@@ -64,12 +66,15 @@ namespace SpiceApp
                 options.Cookie.HttpOnly = true;
             });
 
+            services.Configure<StripeSettings > (Configuration.GetSection("Stripe"));
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IMenuItemService, MenuItemService>();
-            services.AddScoped<ICouponService, CouponService>();
+            services.AddScoped<ICouponService, Services.CouponService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
+            services.AddScoped<IOrderService, Services.OrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,7 +98,8 @@ namespace SpiceApp
             app.UseSession();
 
             app.UseRouting();
-
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
+            //StripeConfiguration.SetApiKey( Configuration.GetSection("Stripe")["SecretKey"]); for core 2.2
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Spice</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -50,7 +52,7 @@
                         @if (count != null)
                         {
                             <li style="color:white">
-                                <a href="#" class="nav-link">
+                                <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link">
                                     <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
                                 </a>
                             </li>
@@ -58,7 +60,7 @@
                         else
                         {
                             <li style="color:white">
-                                <a href="#" class="nav-link">
+                                <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link">
                                     <i class="fas fa-shopping-cart"></i> &nbsp; (0)
                                 </a>
                             </li>
@@ -82,6 +84,7 @@
     <script src="https://cdn.tiny.cloud/1/01ml2hj3f9hqvlx2f5atm93y45wmwfxznow8kqts4lgn9pzj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

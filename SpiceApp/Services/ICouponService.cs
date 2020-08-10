@@ -10,6 +10,7 @@ namespace SpiceApp.Services
         Task<bool> DeleteCoupon(int id);
         Task<IEnumerable<Coupon>> GetAllCoupons();
         Task<Coupon> GetCouponById(int id);
+        Task<Coupon> GetCouponByName(string couponName);
         Task<bool> UpdateCoupon(Coupon updatedCoupon);
     }
 }

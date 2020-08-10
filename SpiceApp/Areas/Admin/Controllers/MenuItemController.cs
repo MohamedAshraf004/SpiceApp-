@@ -198,7 +198,7 @@ namespace SpiceApp.Areas.Admin.Controllers
                     model.Img.CopyTo(filestream);
                     filestream.Flush();
                 }
-                uniqueFileName = "MenuItem\\" + uniqueFileName;
+                uniqueFileName = "\\images\\MenuItem\\" + uniqueFileName;
                 return uniqueFileName;
             }
             return null;

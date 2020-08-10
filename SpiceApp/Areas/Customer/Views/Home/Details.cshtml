@@ -1,7 +1,7 @@
 ﻿@model ShoppingCart
 @{
     ViewData["Title"] = "Details";
-    var photo = "~/Images/" + (Model.MenuItem.Image ?? SD.DefaultFoodImage);
+    var photo = (Model.MenuItem.Image ?? "\\Images\\" + SD.DefaultFoodImage);
 }
 
 <br />
