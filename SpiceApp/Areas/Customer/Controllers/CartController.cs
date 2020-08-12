@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpiceApp.Models;
@@ -14,6 +15,7 @@ using Stripe;
 namespace SpiceApp.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize]
     public class CartController : Controller
     {
         private readonly IShoppingCartService shoppingCartService;
@@ -196,14 +198,17 @@ namespace SpiceApp.Areas.Customer.Controllers
             {
                 DetailsCart.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 DetailsCart.OrderHeader.Status= SD.StatusSubmitted;
+                await orderService.CommitAsync();
+
             }
             else
             {
                 DetailsCart.OrderHeader.PaymentStatus = SD.PaymentStatusRejected;
+                await orderService.CommitAsync();
             }
-            await orderService.CommitAsync();
-
-            return RedirectToAction("Index", "Home");
+            
+            return RedirectToAction("Confirm", "Order",new { id = DetailsCart.OrderHeader.Id });
+            //return RedirectToAction("Index", "Home");
         }
 
         public IActionResult AddCoupon()

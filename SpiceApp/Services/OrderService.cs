@@ -1,5 +1,7 @@
-﻿using SpiceApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SpiceApp.Data;
 using SpiceApp.Models;
+using SpiceApp.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +39,55 @@ namespace SpiceApp.Services
         public async Task CommitAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<OrderHeader> GetOrderHeaderByUserIdAsync(string ApplicationUserId)
+        {
+            return await _dbContext.OrderHeaders.Include(u => u.ApplicationUser)
+                .FirstOrDefaultAsync(u => u.UserId == ApplicationUserId);
+        }
+
+        public async Task<List<OrderHeader>> GetAllOrderHeaderByUserIdAsync(string ApplicationUserId)
+        {
+            return await _dbContext.OrderHeaders.Include(u => u.ApplicationUser)
+                .Where(u => u.UserId == ApplicationUserId).ToListAsync();
+        }
+
+        public async Task<List<OrderDetails>> GetOrderDetailsByOrderHeaderIdAsync(int orderHeaderId)
+        {
+            return await _dbContext.OrderDetails.Where(u => u.OrderId == orderHeaderId).ToListAsync();
+        }
+
+        public async Task<OrderHeader> GetOrderHeaderById(int orderHeaderId)
+        {
+            return await _dbContext.OrderHeaders.Include(u=>u.ApplicationUser)
+                .FirstOrDefaultAsync(o => o.Id == orderHeaderId);
+        }
+        public async Task OrderPrepare(int orderId)
+        {
+             (await _dbContext.OrderHeaders
+                .FirstOrDefaultAsync(o => o.Id == orderId)).Status=SD.StatusInProcess;
+            await _dbContext.SaveChangesAsync();
+        }
+         public async Task OrderReady(int orderId)
+        {
+             (await _dbContext.OrderHeaders
+                .FirstOrDefaultAsync(o => o.Id == orderId)).Status=SD.StatusReady;
+            await _dbContext.SaveChangesAsync();
+        }
+         public async Task OrderCancelled(int orderId)
+        {
+             (await _dbContext.OrderHeaders
+                .FirstOrDefaultAsync(o => o.Id == orderId)).Status=SD.StatusCancelled;
+            await _dbContext.SaveChangesAsync();
+        }
+        
+
+        public async Task<List<OrderHeader>> GetOrderHeadersWhichSubmittedOrInProecess()
+        {
+            return await _dbContext.OrderHeaders
+                .Where(o => o.Status == SD.StatusInProcess || o.Status == SD.StatusSubmitted)
+                .OrderByDescending(o=>o.PickUpTime).ToListAsync();
         }
     }
 }

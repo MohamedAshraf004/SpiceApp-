@@ -62,7 +62,6 @@ body {
 
 .search-background {
     background: url('/images/dust_scratches.png');
-/*    background-image: url('../images/dust_scratches.png');*/
 }
 
 .backgroundWhite {
@@ -109,6 +108,3 @@ body {
         background-color: #545b62;
         color: #fff;
     }
-.form-control:disabled, .form-control[readonly] {
-    background-color: white;
-}

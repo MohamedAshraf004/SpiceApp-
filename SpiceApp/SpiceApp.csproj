@@ -13,6 +13,10 @@
     <Compile Remove="Data\Migrations\20200806225655_AddMenuItem.Designer.cs" />
   </ItemGroup>
 
+  <ItemGroup> 
+    <Content Remove="Views\Shared\_IndividualOrderDetails.cshtml" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
@@ -29,6 +33,18 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\_IndividualOrderDetails.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\_IndividualOrderDetails.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\_IndividualOrderDetails.cshtml" />
   </ItemGroup>
 
 </Project>
