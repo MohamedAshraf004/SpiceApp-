@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using SpiceApp.Models;
 using SpiceApp.Services;
@@ -19,10 +20,15 @@ namespace SpiceApp.Areas.Customer.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly IEmailSender emailSender;
+        private readonly IUserService userService;
         private int PageSize = 2;
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService,IEmailSender emailSender,
+                                IUserService userService)
         {
             this.orderService = orderService;
+            this.emailSender = emailSender;
+            this.userService = userService;
         }
         public async Task<IActionResult> Confirm(int id)
         {
@@ -124,7 +130,12 @@ namespace SpiceApp.Areas.Customer.Controllers
             await orderService.OrderReady(OrderId);
 
             //Email logic to notify user that order is ready for pickup
-            //await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId).FirstOrDefault().Email, "Spice - Order Ready for Pickup " + orderHeader.Id.ToString(), "Order is ready for pickup.");
+            var order = await orderService.GetOrderHeaderById(OrderId);
+            var subject = "Spicy - Order Ready " + OrderId.ToString();
+            var msg = "The Order Has been Ready for pichup.";
+            var applicationUser = await userService.GetUserById(order.UserId);
+            await emailSender.SendEmailAsync(applicationUser.Email, subject, msg);
+
 
             return RedirectToAction("ManageOrder", "Order");
         }
@@ -133,8 +144,11 @@ namespace SpiceApp.Areas.Customer.Controllers
         public async Task<IActionResult> OrderCancel(int OrderId)
         {
             await orderService.OrderCancelled(OrderId);
-
-            //await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId).FirstOrDefault().Email, "Spice - Order Cancelled " + orderHeader.Id.ToString(), "Order has been cancelled successfully.");
+            var order= await orderService.GetOrderHeaderById(OrderId);
+            var subject = "Spicy - Order Cancelled " + OrderId.ToString();
+            var msg = "The Order Has been Cancelled successfully";
+            var applicationUser = await userService.GetUserById(order.UserId);
+            await emailSender.SendEmailAsync(applicationUser.Email, subject, msg);
 
             return RedirectToAction("ManageOrder", "Order");
         }
@@ -221,7 +235,12 @@ namespace SpiceApp.Areas.Customer.Controllers
             OrderHeader orderHeader = await orderService.GetOrderHeaderById(orderId);
             orderHeader.Status = SD.StatusCompleted;
             await orderService.CommitAsync();
-            //await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId).FirstOrDefault().Email, "Spice - Order Completed " + orderHeader.Id.ToString(), "Order has been completed successfully.");
+
+            var order = await orderService.GetOrderHeaderById(orderId);
+            var subject = "Spicy - Order Completed " + orderId.ToString();
+            var msg = "The Order Has been Completed successfully";
+            var applicationUser = await userService.GetUserById(order.UserId);
+            await emailSender.SendEmailAsync(applicationUser.Email, subject, msg);
 
             return RedirectToAction("OrderPickup", "Order");
         }

@@ -56,7 +56,7 @@
                             </li>
 
 
-                            @if ( !(User.IsInRole(SD.CustomerEndUser)) )
+                            @if (!(User.IsInRole(SD.CustomerEndUser)))
                             {
                                 <li class="nav-item dropdown text-white-50">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -72,8 +72,8 @@
                                     </div>
 
                                 </li>
-                             }
-                         }
+                            }
+                        }
 
                         @{
                             var count = HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssShoppingCartCount);

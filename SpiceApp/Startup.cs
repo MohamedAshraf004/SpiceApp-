@@ -93,6 +93,8 @@ namespace SpiceApp
 
 
             services.Configure<StripeSettings > (Configuration.GetSection("Stripe"));
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<EmailOptions > (Configuration);
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
@@ -101,11 +103,11 @@ namespace SpiceApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IOrderService, Services.OrderService>();
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IDbInitializer,DbInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -118,6 +120,7 @@ namespace SpiceApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            dbInitializer.InitializeAsync();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

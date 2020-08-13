@@ -101,48 +101,55 @@ namespace SpiceApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    if (!(_roleManager.Roles.Any()))
+                    //if (!(_roleManager.Roles.Any()))
+                    //{
+                    //    if (!(await _roleManager.RoleExistsAsync(SD.ManagerUser)))
+                    //    {
+                    //        await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
+                    //    }
+                    //    if (!(await _roleManager.RoleExistsAsync(SD.KitchenUser)))
+                    //    {
+                    //        await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
+                    //    }
+                    //    if (!(await _roleManager.RoleExistsAsync(SD.FrontDeskUser)))
+                    //    {
+                    //        await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
+                    //    }
+                    //    if (!(await _roleManager.RoleExistsAsync(SD.CustomerEndUser)))
+                    //    {
+                    //        await _roleManager.CreateAsync(new IdentityRole(SD.CustomerEndUser));
+                    //    }                      
+                    //    await _userManager.AddToRoleAsync(user, SD.ManagerUser);
+                    //    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //    return LocalRedirect(returnUrl);
+                    //}
+                    if (User.IsInRole(SD.ManagerUser))
                     {
-                        if (!(await _roleManager.RoleExistsAsync(SD.ManagerUser)))
+                        var role = Request.Form["rdUserRole"];
+                        switch (role)
                         {
-                            await _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser));
+                            case SD.FrontDeskUser:
+                                await _userManager.AddToRoleAsync(user, SD.FrontDeskUser);
+                                break;
+                            case SD.ManagerUser:
+                                await _userManager.AddToRoleAsync(user, SD.ManagerUser);
+                                break;
+                            case SD.KitchenUser:
+                                await _userManager.AddToRoleAsync(user, SD.KitchenUser);
+                                break;
+                            default:
+                                await _userManager.AddToRoleAsync(user, SD.CustomerEndUser);
+                                await _signInManager.SignInAsync(user, isPersistent: false);
+                                return LocalRedirect(returnUrl);
                         }
-                        if (!(await _roleManager.RoleExistsAsync(SD.KitchenUser)))
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole(SD.KitchenUser));
-                        }
-                        if (!(await _roleManager.RoleExistsAsync(SD.FrontDeskUser)))
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser));
-                        }
-                        if (!(await _roleManager.RoleExistsAsync(SD.CustomerEndUser)))
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole(SD.CustomerEndUser));
-                        }                      
-                        await _userManager.AddToRoleAsync(user, SD.ManagerUser);
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        _logger.LogInformation("User created a new account with password.");
+                        return RedirectToAction("Index", "User", new { area = "Admin" });
                     }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
 
-                    var role = Request.Form["rdUserRole"];
-                    switch (role)
-                    {
-                        case SD.FrontDeskUser :
-                            await _userManager.AddToRoleAsync(user, SD.FrontDeskUser);
-                            break;
-                        case SD.ManagerUser :
-                            await _userManager.AddToRoleAsync(user, SD.ManagerUser);
-                            break;
-                        case SD.KitchenUser :
-                            await _userManager.AddToRoleAsync(user, SD.KitchenUser);
-                            break;
-                        default:
-                            await _userManager.AddToRoleAsync(user, SD.CustomerEndUser);
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                    }
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToAction("Index", "User", new { area = "Admin" });
+                    //_logger.LogInformation("User created a new account with password.");
+                    //return RedirectToAction("Index", "User", new { area = "Admin" });
 
                     #region Email Confirmation
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using SpiceApp.Models;
 using SpiceApp.Services;
@@ -23,18 +24,21 @@ namespace SpiceApp.Areas.Customer.Controllers
         private readonly ICouponService couponService;
         private readonly IUserService userService;
         private readonly IOrderService orderService;
+        private readonly IEmailSender emailSender;
 
         public CartController(IShoppingCartService shoppingCartService
                                 ,IMenuItemService menuItemService
                                 ,ICouponService couponService
                                 ,IUserService userService
-                                ,IOrderService orderService)
+                                ,IOrderService orderService
+                                ,IEmailSender emailSender)
         {
             this.shoppingCartService = shoppingCartService;
             this.menuItemService = menuItemService;
             this.couponService = couponService;
             this.userService = userService;
             this.orderService = orderService;
+            this.emailSender = emailSender;
         }
         [BindProperty]
         public OrderDetailsCart DetailsCart{ get; set; }
@@ -125,7 +129,7 @@ namespace SpiceApp.Areas.Customer.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost,ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost(string stripeToken)
+        public async Task<IActionResult> SummaryPost(string stripeEmail,string stripeToken)
         {
             var claimsIdentity = (ClaimsIdentity)this.User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -196,6 +200,11 @@ namespace SpiceApp.Areas.Customer.Controllers
             }
             if(charge.Status.ToLower()=="succeeded")
             {
+                var subject = "Spicy - Order Created " + DetailsCart.OrderHeader.Id.ToString();
+                var msg = "The Order Has been created successfully";
+
+                await emailSender.SendEmailAsync(applicationUser.Email, subject,msg);
+
                 DetailsCart.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 DetailsCart.OrderHeader.Status= SD.StatusSubmitted;
                 await orderService.CommitAsync();
