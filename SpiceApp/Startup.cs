@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,14 +69,27 @@ namespace SpiceApp
 
             services.AddAuthentication().AddFacebook(options =>
             {
-                options.AppId = "296118924991691";
-                options.AppSecret = "21ac384c7fba4fdcadfc4c1319a0aa34";
+                // dotnet user-secrets set "Authentication:Facebook:AppId" "21........"
+                // dotnet user-secrets set "Authentication:Facebook:AppSecret" "21000...."
+                options.AppId     = Configuration["Authentication:Facebook:AppId"];
+                options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             })
                 .AddGoogle(options=> 
                 {
-                    options.ClientId = "1040663017665-vh6pf6gm03sp8vi5303vqe2om2h1m3fc.apps.googleusercontent.com";
-                    options.ClientSecret = "LncdvHgCTn5fhewf16zxzeqv";
-                }); 
+                    // dotnet user-secrets set "Authentication:Google:ClientId" "10401400........"
+                    // dotnet user-secrets set "Authentication:Google:ClientSecret" ".........02v"
+                    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                })
+                .AddMicrosoftAccount(microsoftOptions =>
+                {
+                    // dotnet user-secrets set "Authentication:Microsoft:ClientId" "e......"
+                    // dotnet user-secrets set "Authentication:Microsoft:ClientSecret" "DP.............."
+                    microsoftOptions.ClientId =     Configuration["Authentication:Microsoft:ClientId"];
+                    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+                    microsoftOptions.AuthorizationEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/authorize";
+                    microsoftOptions.TokenEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/token";
+                });
 
 
             services.Configure<StripeSettings > (Configuration.GetSection("Stripe"));
