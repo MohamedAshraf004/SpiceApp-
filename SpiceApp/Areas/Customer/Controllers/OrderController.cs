@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -136,6 +137,93 @@ namespace SpiceApp.Areas.Customer.Controllers
             //await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId).FirstOrDefault().Email, "Spice - Order Cancelled " + orderHeader.Id.ToString(), "Order has been cancelled successfully.");
 
             return RedirectToAction("ManageOrder", "Order");
+        }
+
+
+        public async Task<IActionResult> OrderPickup(int productPage = 1, string searchEmail = null, 
+                                                    string searchPhone = null, string searchName = null)
+        {
+
+            OrderListViewModel orderListVM = new OrderListViewModel()
+            {
+                Orders = new List<OrderDetailsViewModel>()
+            };
+
+            StringBuilder param = new StringBuilder();
+            param.Append("/Customer/Order/OrderPickup?productPage=:");
+            param.Append("&searchName=");
+            if (searchName != null)
+            {
+                param.Append(searchName);
+            }
+            param.Append("&searchEmail=");
+            if (searchEmail != null)
+            {
+                param.Append(searchEmail);
+            }
+            param.Append("&searchPhone=");
+            if (searchPhone != null)
+            {
+                param.Append(searchPhone);
+            }
+
+
+            List<OrderHeader> orderHeaderList = new List<OrderHeader>();
+
+            if (searchName !=null)
+            {
+                orderHeaderList = await orderService.GetOrderHeaderByName(searchName);
+            }
+            else if (searchEmail != null)
+            {
+                orderHeaderList = await orderService.GetOrderHeaderByPhoneNumber(searchPhone);
+            }
+            else if(searchPhone != null)
+            {
+                orderHeaderList = await orderService.GetOrderHeaderByEmail(searchEmail);
+            }
+            else
+            {
+                orderHeaderList = await orderService.GetOrderHeaderWhichStatusIsReadyAsync();
+            }
+
+            foreach (var item in orderHeaderList)
+            {
+                OrderDetailsViewModel model = new OrderDetailsViewModel()
+                {
+                    OrderHeader = item,
+                    OrderDetails = await orderService.GetOrderDetailsByOrderHeaderIdAsync(item.Id)
+                };
+                orderListVM.Orders.Add(model);
+            }
+
+            var count = orderListVM.Orders.Count;
+            orderListVM.Orders = orderListVM.Orders.OrderByDescending(p => p.OrderHeader.Id)
+                                 .Skip((productPage - 1) * PageSize)
+                                 .Take(PageSize).ToList();
+
+            orderListVM.PagingInfo = new PagingInfo
+            {
+                CurrentPage = productPage,
+                ItemsPerPage = PageSize,
+                TotalItem = count,
+                urlParam = param.ToString()
+            };
+
+            return View(orderListVM);
+        }
+
+        [Authorize(Roles = SD.FrontDeskUser + "," + SD.ManagerUser)]
+        [HttpPost]
+        [ActionName("OrderPickup")]
+        public async Task<IActionResult> OrderPickupPost(int orderId)
+        {
+            OrderHeader orderHeader = await orderService.GetOrderHeaderById(orderId);
+            orderHeader.Status = SD.StatusCompleted;
+            await orderService.CommitAsync();
+            //await _emailSender.SendEmailAsync(_db.Users.Where(u => u.Id == orderHeader.UserId).FirstOrDefault().Email, "Spice - Order Completed " + orderHeader.Id.ToString(), "Order has been completed successfully.");
+
+            return RedirectToAction("OrderPickup", "Order");
         }
 
         public IActionResult Index()

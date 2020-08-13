@@ -53,6 +53,12 @@ namespace SpiceApp.Services
                 .Where(u => u.UserId == ApplicationUserId).ToListAsync();
         }
 
+        public async Task<List<OrderHeader>> GetOrderHeaderWhichStatusIsReadyAsync()
+        {
+            return await _dbContext.OrderHeaders.Include(u => u.ApplicationUser)
+                .Where(u => u.Status==SD.StatusReady).ToListAsync();
+        }
+
         public async Task<List<OrderDetails>> GetOrderDetailsByOrderHeaderIdAsync(int orderHeaderId)
         {
             return await _dbContext.OrderDetails.Where(u => u.OrderId == orderHeaderId).ToListAsync();
@@ -88,6 +94,28 @@ namespace SpiceApp.Services
             return await _dbContext.OrderHeaders
                 .Where(o => o.Status == SD.StatusInProcess || o.Status == SD.StatusSubmitted)
                 .OrderByDescending(o=>o.PickUpTime).ToListAsync();
+        }
+
+        public async Task<List<OrderHeader>> GetOrderHeaderByName(string name)
+        {
+            return await _dbContext.OrderHeaders.Include(u => u.ApplicationUser)
+                .Where(o => o.PickupName.Trim().ToLower().Contains(name.Trim().ToLower()))
+                .OrderByDescending(o => o.OrderDate).ToListAsync();
+        }
+
+        public async Task<List<OrderHeader>> GetOrderHeaderByPhoneNumber(string phoneNumber)
+        {
+            return await _dbContext.OrderHeaders.Include(u=>u.ApplicationUser)
+                .Where(o => o.PhoneNumber.Trim().Contains(phoneNumber.Trim()))
+                .OrderByDescending(o => o.OrderDate).ToListAsync();
+
+        }
+
+        public async Task<List<OrderHeader>> GetOrderHeaderByEmail(string email)
+        {
+            var user = await _dbContext.ApplicationUsers.Where(u => u.Email.Trim().ToLower().Contains(email.Trim().ToLower())).FirstOrDefaultAsync();
+            return await _dbContext.OrderHeaders.Include(u => u.ApplicationUser)
+                            .Where(o => o.UserId == user.Id).OrderByDescending(o => o.OrderDate).ToListAsync();
         }
     }
 }

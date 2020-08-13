@@ -25,20 +25,20 @@ namespace SpiceApp.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
-        //private readonly IEmailSender _emailSender;
+        private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterModel> logger
-            /*IEmailSender emailSender*/)
+            ILogger<RegisterModel> logger,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             this._roleManager = roleManager;
             _signInManager = signInManager;
             _logger = logger;
-            //_emailSender = emailSender;
+            _emailSender = emailSender;
         }
 
         [BindProperty]

@@ -14,6 +14,10 @@ namespace SpiceApp.Services
         Task<List<OrderHeader>> GetOrderHeadersWhichSubmittedOrInProecess();
         Task<List<OrderDetails>> GetOrderDetailsByOrderHeaderIdAsync(int orderHeaderId);
         Task<OrderHeader> GetOrderHeaderById(int orderHeaderId);
+        Task<List<OrderHeader>> GetOrderHeaderWhichStatusIsReadyAsync();
+        Task<List<OrderHeader>> GetOrderHeaderByName(string name);
+        Task<List<OrderHeader>> GetOrderHeaderByPhoneNumber(string phoneNumber);
+        Task<List<OrderHeader>> GetOrderHeaderByEmail(string email);
         Task OrderPrepare(int orderId);
         Task OrderReady(int orderId);
         Task OrderCancelled(int orderId);

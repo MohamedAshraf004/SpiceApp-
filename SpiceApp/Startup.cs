@@ -17,6 +17,7 @@ using SpiceApp.Models;
 using SpiceApp.Utility;
 using Microsoft.AspNetCore.Http;
 using Stripe;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SpiceApp
 {
@@ -66,6 +67,13 @@ namespace SpiceApp
                 options.Cookie.HttpOnly = true;
             });
 
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "296118924991691";
+                options.AppSecret = "21ac384c7fba4fdcadfc4c1319a0aa34";
+            }); 
+
+
             services.Configure<StripeSettings > (Configuration.GetSection("Stripe"));
 
             services.AddScoped<ICategoryService, CategoryService>();
@@ -75,6 +83,7 @@ namespace SpiceApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IOrderService, Services.OrderService>();
+            services.AddScoped<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
