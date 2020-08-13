@@ -71,7 +71,12 @@ namespace SpiceApp
             {
                 options.AppId = "296118924991691";
                 options.AppSecret = "21ac384c7fba4fdcadfc4c1319a0aa34";
-            }); 
+            })
+                .AddGoogle(options=> 
+                {
+                    options.ClientId = "1040663017665-vh6pf6gm03sp8vi5303vqe2om2h1m3fc.apps.googleusercontent.com";
+                    options.ClientSecret = "LncdvHgCTn5fhewf16zxzeqv";
+                }); 
 
 
             services.Configure<StripeSettings > (Configuration.GetSection("Stripe"));
