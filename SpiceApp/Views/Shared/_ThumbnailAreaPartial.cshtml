@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-md-3 col-sm-12">
                     @{ 
-                        var photoPath = "/images/" + (item.Image?? SpiceApp.Utility.SD.DefaultFoodImage);
+                        var photoPath = (item.Image?? "/images/" + SpiceApp.Utility.SD.DefaultFoodImage);
                     }
                     <img src="@photoPath" width="99%" style="border-radius:5px;border:1px solid #bbb9b9" />
                 </div>

@@ -57,10 +57,21 @@ namespace SpiceApp.Services
                 EmailConfirmed = true,
                 PhoneNumber = "1201339358"
             }, "Admin@123").GetAwaiter().GetResult();
+            _userManager.CreateAsync(new ApplicationUser
+            {
+                UserName = "spicy@gmail.com",
+                Email = "spicy@gmail.com",
+                Name = "Mohamed Ash",
+                EmailConfirmed = true,
+                PhoneNumber = "1201339358"
+            }, "Spicy@123").GetAwaiter().GetResult();
 
             IdentityUser user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == "admin@gmail.com");
+            IdentityUser u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == "spicy@gmail.com");
 
-            await _userManager.AddToRoleAsync(user, SD.ManagerUser);
+            (_userManager.AddToRoleAsync(user, SD.ManagerUser)).GetAwaiter().GetResult();
+            (_userManager.AddToRoleAsync(u, SD.ManagerUser)).GetAwaiter().GetResult();
+            _dbContext.SaveChangesAsync().GetAwaiter().GetResult();
 
         }
     }

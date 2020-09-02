@@ -24,9 +24,9 @@ namespace SpiceApp.Services
             return await _dbContext.SaveChangesAsync() > 0 ? true : false;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategories()
+        public IEnumerable<Category> GetAllCategoriesPaging()
         {
-            return await _dbContext.Categories.ToListAsync();
+            return _dbContext.Categories.AsNoTracking();
         }
 
         public async Task<Category> GetCategoryById(int id)
@@ -45,6 +45,11 @@ namespace SpiceApp.Services
             var category = _dbContext.Categories.Attach(updatedCategory);
             category.State = EntityState.Modified;
             return await _dbContext.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task<IEnumerable<Category>> GetAllCategories()
+        {
+            return await _dbContext.Categories.ToListAsync();
         }
     }
 }

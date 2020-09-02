@@ -18,6 +18,7 @@ using SpiceApp.Utility;
 using Microsoft.AspNetCore.Http;
 using Stripe;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using ReflectionIT.Mvc.Paging;
 
 namespace SpiceApp
 {
@@ -67,28 +68,29 @@ namespace SpiceApp
                 options.Cookie.HttpOnly = true;
             });
 
-            services.AddAuthentication().AddFacebook(options =>
+            services.AddAuthentication()
+                .AddFacebook(options =>
             {
                 // dotnet user-secrets set "Authentication:Facebook:AppId" "21........"
                 // dotnet user-secrets set "Authentication:Facebook:AppSecret" "21000...."
-                options.AppId     = Configuration["Authentication:Facebook:AppId"];
-                options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //options.AppId     = Configuration["Authentication:Facebook:AppId"];
+                //options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             })
-                .AddGoogle(options=> 
+                .AddGoogle(options =>
                 {
                     // dotnet user-secrets set "Authentication:Google:ClientId" "10401400........"
                     // dotnet user-secrets set "Authentication:Google:ClientSecret" ".........02v"
-                    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                    //options.ClientId = Configuration["Authentication:Google:ClientId"];
+                    //options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 })
                 .AddMicrosoftAccount(microsoftOptions =>
                 {
                     // dotnet user-secrets set "Authentication:Microsoft:ClientId" "e......"
                     // dotnet user-secrets set "Authentication:Microsoft:ClientSecret" "DP.............."
-                    microsoftOptions.ClientId =     Configuration["Authentication:Microsoft:ClientId"];
-                    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
-                    microsoftOptions.AuthorizationEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/authorize";
-                    microsoftOptions.TokenEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/token";
+                    //microsoftOptions.ClientId =     Configuration["Authentication:Microsoft:ClientId"];
+                    //microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+                    //microsoftOptions.AuthorizationEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/authorize";
+                    //microsoftOptions.TokenEndpoint = "https://login.microsoftonline.com/418d27f0-b313-4f5c-b6a5-fcd00d8a1348/oauth2/v2.0/token";
                 });
 
 
@@ -104,6 +106,10 @@ namespace SpiceApp
             services.AddScoped<IShoppingCartService, ShoppingCartService>();
             services.AddScoped<IOrderService, Services.OrderService>();
             services.AddScoped<IDbInitializer,DbInitializer>();
+            services.AddPaging(options => {
+                options.ViewName = "Bootstrap4";
+                options.PageParameterName = "pageindex";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,6 +126,8 @@ namespace SpiceApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseRouting();
+
             dbInitializer.InitializeAsync();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -127,7 +135,7 @@ namespace SpiceApp
             app.UseCookiePolicy();
             app.UseSession();
 
-            app.UseRouting();
+           
             StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
             //StripeConfiguration.SetApiKey( Configuration.GetSection("Stripe")["SecretKey"]); for core 2.2
             app.UseAuthentication();

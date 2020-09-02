@@ -7,6 +7,7 @@ namespace SpiceApp.Services
     public interface ICategoryService
     {
         Task<IEnumerable<Category>> GetAllCategories();
+        IEnumerable<Category> GetAllCategoriesPaging();
         Task<Category> GetCategoryById(int id);
         Task<bool> AddCategory(Category category);
         Task<bool> UpdateCategory(Category category);

@@ -2,7 +2,7 @@
 @using SpiceApp.Utility;
 @{
     ViewData["Title"] = "Edit";
-    var photo = "~/Images/" + (Model.MenuItem.Image?? SD.DefaultFoodImage);
+    var photo = (Model.MenuItem.Image?? SD.DefaultFoodImage);
 }
 
 <br />

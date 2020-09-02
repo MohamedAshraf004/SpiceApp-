@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReflectionIT.Mvc.Paging;
 using SpiceApp.Models;
 using SpiceApp.Services;
 using SpiceApp.Utility;
@@ -20,9 +21,14 @@ namespace SpiceApp.Areas.Admin.Controllers
         {
             this.categoryService = categoryService;
         }
-        public async Task<IActionResult> Index()
+        //[Route("/Admin/Category")]
+        //[Route("/Admin/Category/Index")]
+        public ActionResult Index(int pageindex = 1)
         {
-            return View(await categoryService.GetAllCategories());
+            //var queryTest = await categoryService.GetAllCategories();
+            var query =  categoryService.GetAllCategoriesPaging().OrderBy(c=>c.Name);
+            var model = PagingList.Create(query, 2, pageindex);
+            return View(model);
         }
         public async Task<IActionResult> Details(int? id)
         {
