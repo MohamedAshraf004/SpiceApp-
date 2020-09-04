@@ -20,10 +20,10 @@ namespace SpiceApp.Areas.Customer.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderService orderService;
-        private readonly IEmailSender emailSender;
+        private readonly Services.IEmailSender emailSender;
         private readonly IUserService userService;
         private int PageSize = 2;
-        public OrderController(IOrderService orderService,IEmailSender emailSender,
+        public OrderController(IOrderService orderService, Services.IEmailSender emailSender,
                                 IUserService userService)
         {
             this.orderService = orderService;

@@ -24,14 +24,14 @@ namespace SpiceApp.Areas.Customer.Controllers
         private readonly ICouponService couponService;
         private readonly IUserService userService;
         private readonly IOrderService orderService;
-        private readonly IEmailSender emailSender;
+        private readonly Services.IEmailSender emailSender;
 
         public CartController(IShoppingCartService shoppingCartService
                                 ,IMenuItemService menuItemService
                                 ,ICouponService couponService
                                 ,IUserService userService
                                 ,IOrderService orderService
-                                ,IEmailSender emailSender)
+                                , Services.IEmailSender emailSender)
         {
             this.shoppingCartService = shoppingCartService;
             this.menuItemService = menuItemService;
@@ -204,6 +204,7 @@ namespace SpiceApp.Areas.Customer.Controllers
                 var msg = "The Order Has been created successfully";
 
                 await emailSender.SendEmailAsync(applicationUser.Email, subject,msg);
+                //emailSender.SendMailkit(applicationUser.Name,applicationUser.Email);
 
                 DetailsCart.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 DetailsCart.OrderHeader.Status= SD.StatusSubmitted;
