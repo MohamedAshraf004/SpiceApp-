@@ -5,10 +5,7 @@ using SpiceApp.Data;
 using SpiceApp.Models;
 using SpiceApp.Utility;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpiceApp.Services
 {
@@ -19,15 +16,15 @@ namespace SpiceApp.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<DbInitializer> logger;
 
-        public DbInitializer(ApplicationDbContext dbContext,UserManager<IdentityUser> userManager
-                            ,RoleManager<IdentityRole> roleManager,ILogger<DbInitializer> logger)
+        public DbInitializer(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager
+                            , RoleManager<IdentityRole> roleManager, ILogger<DbInitializer> logger)
         {
             this._dbContext = dbContext;
             this._userManager = userManager;
             this._roleManager = roleManager;
             this.logger = logger;
         }
-        
+
         public async void InitializeAsync()
         {
             try
@@ -37,12 +34,12 @@ namespace SpiceApp.Services
                     _dbContext.Database.Migrate();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
 
-            if (_dbContext.Roles.Any(r => r.Name == SD.ManagerUser)) return;
+            if (_dbContext.Roles.Any(r => r.Name == SD.ManagerUser) == true) return;
 
             _roleManager.CreateAsync(new IdentityRole(SD.ManagerUser)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.FrontDeskUser)).GetAwaiter().GetResult();
